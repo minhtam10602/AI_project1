@@ -191,6 +191,34 @@ def a_star_search_with_time_constraint(city_map, start, goal, max_time):
                         heapq.heappush(pq, (new_f, new_g, (nx, ny), path + [(x, y)], new_time))
                 
     return None, None  # No path found or path exceeds max time
+# A* Search implementation considering fuel cost and gas station
+
+def a_star_search_with_fuel_constraint(city_map, start, goal, full_fuel):
+    rows, cols = len(city_map), len(city_map[0])
+    visited = [[False for _ in range(cols)] for _ in range(rows)]
+    pq = [(0 + heuristic(start, goal), 0, start, [], full_fuel)]
+    
+    while pq:
+        f, g, (x, y), path, fuel = heapq.heappop(pq)
+        
+        if (x, y) == goal and fuel >= 0:
+            return path + [(x, y)], fuel
+        
+        if not visited[x][y]:
+            visited[x][y] = True
+            for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                nx, ny = x + dx, y + dy
+                
+                if 0 <= nx < rows and 0 <= ny < cols and city_map[nx][ny] != '-1' and not visited[nx][ny]:
+                    new_fuel = full_fuel if city_map[nx][ny] == 'F' else fuel - 1
+                    new_g = g + 1
+                    new_f = new_g + heuristic((nx, ny), goal)
+                    if fuel >= 0:
+                        heapq.heappush(pq, (new_f, new_g, (nx, ny), path + [(x, y)], new_fuel))
+        
+        
+    return None, None #No path found or fuel runs out before reaching the goal
+            
 
 # Function to save the path to a file
 def save_path_to_file(paths, filename):
