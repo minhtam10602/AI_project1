@@ -1,5 +1,6 @@
 import heapq
 from collections import deque
+import copy
 
 # Function to parse the city map
 def parse_city_map_lv2(file_path_level2):
@@ -30,6 +31,37 @@ def parse_city_map_lv1(file_path_level1):
         city_map.append(line.strip().split())
         
     return city_map
+
+def parse_city_map_lv4(file_path_level4):
+    with open(file_path_level4, 'r') as file:
+        lines = file.readlines()
+
+    city_map = []
+    for line in lines[1:]:
+        city_map.append(line.strip().split())
+        
+    return city_map
+
+# Duyệt lấy vị trí các agent trong file input theo số lượng được khai báo
+def get_points(city_map, n_agent):
+    coordinates = {}
+    agent = [item for sublist in [[f'S{i}', f'G{i}'] for i in range(1, n_agent + 1)] for item in sublist]
+
+    print(agent)
+    for i, row in enumerate(city_map):
+        for j, value in enumerate(row):
+            if value in agent:
+                coordinates[value] = (i, j)
+    return coordinates
+
+# Chuyển đổi map theo agent đang duyệt để tránh bị đúng hoặc đi ngang các agent khác
+def define_new_maps(start, goal, coordiante, city_map):
+    new_grid = copy.deepcopy(city_map)
+    for i in coordiante:
+        if coordiante[i] not in (start, goal):
+            new_grid[coordiante[i][0]][coordiante[i][1]] = -1
+    return new_grid
+
 
 def bfs(city_map, start, goal):
     rows, cols = len(city_map), len(city_map[0])
@@ -236,6 +268,8 @@ def save_path_to_file(paths, filename):
 # Parse the city map
 file_path_level1 = 'input_level1.txt'
 file_path_level2 = 'input_level2.txt'
+file_path_level4 = 'input_level4.txt'
+
 city_map = parse_city_map_lv1(file_path_level1)
 city_map, start, max_time, vehicle_name = parse_city_map_lv2(file_path_level2)
 
@@ -256,3 +290,28 @@ save_path_to_file(paths, "output_level1.txt")
 
 paths["A* with Time Constraint"] = a_star_search_with_time_constraint(city_map, start, goal, max_time)
 save_path_to_file(paths, "output_level2.txt")
+
+# Số lượng phần tử phải tương ứng với số lượng S1, S2,... G1, G2,.. được tạo ra trong file input
+def level_4(file_path, n_agents):
+    city_map = parse_city_map_lv4(file_path)
+    coordiante = get_points(city_map, n_agents)
+
+    paths = {}
+
+    for i in range(1, n_agents + 1):  # Đảm bảo vòng lặp từ 1 đến n_agents
+        new_map = define_new_maps(coordiante[f'S{i}'], coordiante[f'G{i}'], coordiante, city_map)
+        # print(new_map)
+        paths[f"BFS-{i}"] = (bfs(new_map, coordiante[f'S{i}'], coordiante[f'G{i}']), None)
+        paths[f"DFS-{i}"] = (dfs(new_map, coordiante[f'S{i}'], coordiante[f'G{i}']), None)
+        paths[f"UCS-{i}"] = (ucs(new_map, coordiante[f'S{i}'], coordiante[f'G{i}']), None)
+        paths[f"Greedy Best First Search - {i}"] = (greedy_best_first_search(new_map, coordiante[f'S{i}'], coordiante[f'G{i}']), None)
+        paths[f"A*-{i}"] = (a_star_search(new_map, coordiante[f'S{i}'], coordiante[f'G{i}']), None)
+
+        print(city_map)
+        # Save the paths to a single file for the current agent
+        save_path_to_file(paths, f"output_level4_agent_{i}.txt")
+        
+        # Xóa path để tránh khi xử lí agent mới sẽ bị trùng data của agent cũ
+        paths.clear()
+
+level_4(file_path_level4, 3)
