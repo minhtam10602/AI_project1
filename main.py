@@ -82,28 +82,7 @@ def bfs(city_map, start, goal):
                 queue.append(((nx, ny), path + [(x, y)]))
                 
     return None
-
-# BFS implementation
-def bfs(city_map, start, goal):
-    rows, cols = len(city_map), len(city_map[0])
-    visited = [[False for _ in range(cols)] for _ in range(rows)]
-    queue = deque([(start, [])])
     
-    while queue:
-        (x, y), path = queue.popleft()
-        
-        if (x, y) == goal:
-            return path + [(x, y)]
-        
-        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-            nx, ny = x + dx, y + dy
-            
-            if 0 <= nx < rows and 0 <= ny < cols and city_map[nx][ny] != '-1' and not visited[nx][ny]:
-                visited[nx][ny] = True
-                queue.append(((nx, ny), path + [(x, y)]))
-                
-    return None  # No path found
-
 # DFS implementation
 def dfs(city_map, start, goal):
     rows, cols = len(city_map), len(city_map[0])
