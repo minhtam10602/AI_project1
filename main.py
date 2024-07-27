@@ -1,5 +1,6 @@
 import heapq
 from collections import deque
+import copy
 
 # Function to parse the city map
 def parse_city_map_lv2(file_path_level2):
@@ -50,6 +51,37 @@ def parse_city_map_lv1(file_path_level1):
         
     return city_map
 
+def parse_city_map_lv4(file_path_level4):
+    with open(file_path_level4, 'r') as file:
+        lines = file.readlines()
+
+    city_map = []
+    for line in lines[1:]:
+        city_map.append(line.strip().split())
+        
+    return city_map
+
+# Duyệt lấy vị trí các agent trong file input theo số lượng được khai báo
+def get_points(city_map, n_agent):
+    coordinates = {}
+    agent = [item for sublist in [[f'S{i}', f'G{i}'] for i in range(1, n_agent + 1)] for item in sublist]
+
+    print(agent)
+    for i, row in enumerate(city_map):
+        for j, value in enumerate(row):
+            if value in agent:
+                coordinates[value] = (i, j)
+    return coordinates
+
+# Chuyển đổi map theo agent đang duyệt để tránh bị đúng hoặc đi ngang các agent khác
+def define_new_maps(start, goal, coordiante, city_map):
+    new_grid = copy.deepcopy(city_map)
+    for i in coordiante:
+        if coordiante[i] not in (start, goal):
+            new_grid[coordiante[i][0]][coordiante[i][1]] = -1
+    return new_grid
+
+
 def bfs(city_map, start, goal):
     rows, cols = len(city_map), len(city_map[0])
     visited = [[False for _ in range(cols)] for _ in range(rows)]
@@ -69,28 +101,7 @@ def bfs(city_map, start, goal):
                 queue.append(((nx, ny), path + [(x, y)]))
                 
     return None
-
-# BFS implementation
-def bfs(city_map, start, goal):
-    rows, cols = len(city_map), len(city_map[0])
-    visited = [[False for _ in range(cols)] for _ in range(rows)]
-    queue = deque([(start, [])])
     
-    while queue:
-        (x, y), path = queue.popleft()
-        
-        if (x, y) == goal:
-            return path + [(x, y)]
-        
-        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-            nx, ny = x + dx, y + dy
-            
-            if 0 <= nx < rows and 0 <= ny < cols and city_map[nx][ny] != '-1' and not visited[nx][ny]:
-                visited[nx][ny] = True
-                queue.append(((nx, ny), path + [(x, y)]))
-                
-    return None  # No path found
-
 # DFS implementation
 def dfs(city_map, start, goal):
     rows, cols = len(city_map), len(city_map[0])
@@ -259,6 +270,11 @@ file_path_level3 = 'input_level3.txt'
 city_map1 = parse_city_map_lv1(file_path_level1)
 city_map2, start, max_time, vehicle_name = parse_city_map_lv2(file_path_level2)
 city_map3, start3, goal3, fuel = parse_city_map_lv3(file_path_level3) 
+file_path_level4 = 'input_level4.txt'
+
+city_map = parse_city_map_lv1(file_path_level1)
+city_map, start, max_time, vehicle_name = parse_city_map_lv2(file_path_level2)
+
 # Define the goal position
 goal = (9, 0)  # Adjust according to the specific goal position
 
@@ -278,3 +294,27 @@ paths["A* with Time Constraint"] = a_star_search_with_time_constraint(city_map2,
 save_path_to_file(paths, "output_level2.txt")
 
 paths["A* with fuel Constraint"] = a_star_search_with_fuel_constraint(city_map=city_map3, start=start3)
+# Số lượng phần tử phải tương ứng với số lượng S1, S2,... G1, G2,.. được tạo ra trong file input
+def level_4(file_path, n_agents):
+    city_map = parse_city_map_lv4(file_path)
+    coordiante = get_points(city_map, n_agents)
+
+    paths = {}
+
+    for i in range(1, n_agents + 1):  # Đảm bảo vòng lặp từ 1 đến n_agents
+        new_map = define_new_maps(coordiante[f'S{i}'], coordiante[f'G{i}'], coordiante, city_map)
+        # print(new_map)
+        paths[f"BFS-{i}"] = (bfs(new_map, coordiante[f'S{i}'], coordiante[f'G{i}']), None)
+        paths[f"DFS-{i}"] = (dfs(new_map, coordiante[f'S{i}'], coordiante[f'G{i}']), None)
+        paths[f"UCS-{i}"] = (ucs(new_map, coordiante[f'S{i}'], coordiante[f'G{i}']), None)
+        paths[f"Greedy Best First Search - {i}"] = (greedy_best_first_search(new_map, coordiante[f'S{i}'], coordiante[f'G{i}']), None)
+        paths[f"A*-{i}"] = (a_star_search(new_map, coordiante[f'S{i}'], coordiante[f'G{i}']), None)
+
+        print(city_map)
+        # Save the paths to a single file for the current agent
+        save_path_to_file(paths, f"output_level4_agent_{i}.txt")
+        
+        # Xóa path để tránh khi xử lí agent mới sẽ bị trùng data của agent cũ
+        paths.clear()
+
+level_4(file_path_level4, 3)
