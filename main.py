@@ -21,6 +21,25 @@ def parse_city_map_lv2(file_path_level2):
         
     return city_map, start_position, max_time, vehicle_name
 
+def parse_city_map_lv3(file_path_level3):
+    with open(file_path_level3, 'r') as file:
+        lines = file.readlines()
+    
+    first_line = lines[0].strip().split()
+    
+    if len(first_line) < 3:
+        raise ValueError("The first line of the input file must contain the vehicle name, start position, and maximum delivery time.")
+    
+    start_position = eval(first_line[0])
+    end_position = eval(first_line[1])
+    fuel = int(first_line[2])
+    
+    city_map = []
+    for line in lines[1:]:
+        city_map.append(line.strip().split())
+        
+    return city_map, start_position, end_position, fuel
+
 def parse_city_map_lv1(file_path_level1):
     with open(file_path_level1, 'r') as file:
         lines = file.readlines()
@@ -236,23 +255,26 @@ def save_path_to_file(paths, filename):
 # Parse the city map
 file_path_level1 = 'input_level1.txt'
 file_path_level2 = 'input_level2.txt'
-city_map = parse_city_map_lv1(file_path_level1)
-city_map, start, max_time, vehicle_name = parse_city_map_lv2(file_path_level2)
-
+file_path_level3 = 'input_level3.txt'
+city_map1 = parse_city_map_lv1(file_path_level1)
+city_map2, start, max_time, vehicle_name = parse_city_map_lv2(file_path_level2)
+city_map3, start3, goal3, fuel = parse_city_map_lv3(file_path_level3) 
 # Define the goal position
 goal = (9, 0)  # Adjust according to the specific goal position
 
 # Run each search algorithm and store the results
 paths = {}
-paths["BFS"] = (bfs(city_map, start, goal), None)
-paths["DFS"] = (dfs(city_map, start, goal), None)
-paths["UCS"] = (ucs(city_map, start, goal), None)
-paths["Greedy Best First Search"] = (greedy_best_first_search(city_map, start, goal), None)
-paths["A*"] = (a_star_search(city_map, start, goal), None)
+paths["BFS"] = (bfs(city_map1, start, goal), None)
+paths["DFS"] = (dfs(city_map1, start, goal), None)
+paths["UCS"] = (ucs(city_map1, start, goal), None)
+paths["Greedy Best First Search"] = (greedy_best_first_search(city_map1, start, goal), None)
+paths["A*"] = (a_star_search(city_map1, start, goal), None)
 
 
 # Save the paths to a single file
 save_path_to_file(paths, "output_level1.txt")
 
-paths["A* with Time Constraint"] = a_star_search_with_time_constraint(city_map, start, goal, max_time)
+paths["A* with Time Constraint"] = a_star_search_with_time_constraint(city_map2, start, goal, max_time)
 save_path_to_file(paths, "output_level2.txt")
+
+paths["A* with fuel Constraint"] = a_star_search_with_fuel_constraint(city_map=city_map3, start=start3)
