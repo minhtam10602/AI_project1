@@ -2,6 +2,7 @@ import heapq
 from collections import deque
 import copy
 
+<<<<<<< Updated upstream
 def parse_city_map_lv2(file_path_level2):
     with open(file_path_level2, 'r') as file:
         lines = file.readlines()
@@ -20,34 +21,19 @@ def parse_city_map_lv2(file_path_level2):
         city_map.append(line.strip().split())
         
     return city_map, start_position, max_time, vehicle_name
+=======
+# Function to parse the city map
+>>>>>>> Stashed changes
 
-def parse_city_map_lv3(file_path_level3):
-    with open(file_path_level3, 'r') as file:
-        lines = file.readlines()
-    
-    first_line = lines[0].strip().split()
-    
-    if len(first_line) < 3:
-        raise ValueError("The first line of the input file must contain start position, end position and fuel.")
-    
-    start_position = eval(first_line[0])
-    end_position = eval(first_line[1])
-    fuel = int(first_line[2])
-    
-    city_map = []
-    for line in lines[1:]:
-        city_map.append(line.strip().split())
-        
-    return city_map, start_position, end_position, fuel
 
-def parse_city_map_lv1(file_path_level1):
+def parse_city_map_lv(file_path_level1):
     with open(file_path_level1, 'r') as file:
         lines = file.readlines()
         
     city_map = []
     for line in lines:
         city_map.append(line.strip().split())
-        
+    line = lines[-1]
     return city_map
 
 def parse_city_map_lv4(file_path_level4):
@@ -263,17 +249,25 @@ def save_path_to_file(paths, filename):
                 file.write("No path found or path exceeds max time")
             file.write('\n\n')
 
+<<<<<<< Updated upstream
 file_path_level1 = 'input_level1_1.txt'
 file_path_level2 = 'input_level2_1.txt'
 file_path_level3 = 'input_level3.txt'
 city_map1 = parse_city_map_lv1(file_path_level1)
 city_map2, start, max_time, vehicle_name = parse_city_map_lv2(file_path_level2)
 city_map3, start3, goal3, fuel = parse_city_map_lv3(file_path_level3) 
+=======
+# Parse the city map
+file_path_level1 = 'input_level1.txt'
+file_path_level2 = 'input_level2.txt'
+file_path_level3 = 'input_level3_1.txt'
+city_map1 = parse_city_map_lv(file_path_level1)
+city_map2 = parse_city_map_lv(file_path_level2)
+city_map3 = parse_city_map_lv(file_path_level3) 
+>>>>>>> Stashed changes
 file_path_level4 = 'input_level4.txt'
 
-city_map = parse_city_map_lv1(file_path_level1)
-city_map, start, max_time, vehicle_name = parse_city_map_lv2(file_path_level2)
-
+start = (1, 0)
 # Define the goal position
 goal = (9, 0)  
 
@@ -289,11 +283,11 @@ save_path_to_file(paths1, "output_level1.txt")
 
 paths2 = {}
 
-paths2["A* with Time Constraint"] = a_star_search_with_time_constraint(city_map2, start, goal, max_time)
+paths2["A* with Time Constraint"] = a_star_search_with_time_constraint(city_map2, start, goal, 15)
 save_path_to_file(paths2, "output_level2.txt")
 
 paths3 = {}
-paths3["A* with fuel Constraint"] = a_star_search_with_fuel_constraint(city_map=city_map3, start=start3, goal=goal3, full_fuel=fuel)
+paths3["A* with fuel Constraint"] = a_star_search_with_fuel_constraint(city_map=city_map3, start=start, goal=goal, full_fuel=20)
 save_path_to_file(paths3, "output_level3.txt")
 # Số lượng phần tử phải tương ứng với số lượng S1, S2,... G1, G2,.. được tạo ra trong file input
 def level_4(file_path, n_agents):

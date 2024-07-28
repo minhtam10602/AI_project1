@@ -1,4 +1,3 @@
 A* with Time Constraint
-(1, 0) (2, 0) (3, 0) (4, 0) (4, 1) (4, 2) (5, 2) (6, 2) (6, 1) (6, 0) (7, 0) (8, 0) (9, 0) 
-Total Time: 12 minutes
+No path found or path exceeds max time
 

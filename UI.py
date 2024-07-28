@@ -3,8 +3,8 @@ import numpy as np
 from matplotlib.widgets import Button
 from matplotlib.colors import TABLEAU_COLORS
 
-def parse_city_map(file_path_level1):
-    with open(file_path_level1, 'r') as file:
+def parse_city_map(file_path_level):
+    with open(file_path_level, 'r') as file:
         lines = file.readlines()
     
     # Read the first line to get the dimensions of the map
@@ -18,7 +18,11 @@ def parse_city_map(file_path_level1):
     return city_map, width, height
 
 # Define the map
+<<<<<<< Updated upstream
 file_path = 'input_level1_1.txt'
+=======
+file_path = 'input_level2.txt'
+>>>>>>> Stashed changes
 city_map, width, height = parse_city_map(file_path)
 
 # Define specific colors for 'S' and 'G' cells
