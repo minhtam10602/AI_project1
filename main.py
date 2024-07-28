@@ -260,7 +260,8 @@ def save_path_to_file(paths, filename):
             if path:
                 for coord in path:
                     file.write(f"({coord[0]}, {coord[1]}) ")
-                file.write(f"\nTotal Time: {total_time} minutes")
+                if total_time:
+                    file.write(f"\nTotal Time: {total_time} minutes")
             else:
                 file.write("No path found or path exceeds max time")
             file.write('\n\n')
@@ -281,21 +282,25 @@ city_map, start, max_time, vehicle_name = parse_city_map_lv2(file_path_level2)
 goal = (9, 0)  # Adjust according to the specific goal position
 
 # Run each search algorithm and store the results
-paths = {}
-paths["BFS"] = (bfs(city_map1, start, goal), None)
-paths["DFS"] = (dfs(city_map1, start, goal), None)
-paths["UCS"] = (ucs(city_map1, start, goal), None)
-paths["Greedy Best First Search"] = (greedy_best_first_search(city_map1, start, goal), None)
-paths["A*"] = (a_star_search(city_map1, start, goal), None)
+paths1 = {}
+paths1["BFS"] = (bfs(city_map1, start, goal), None)
+paths1["DFS"] = (dfs(city_map1, start, goal), None)
+paths1["UCS"] = (ucs(city_map1, start, goal), None)
+paths1["Greedy Best First Search"] = (greedy_best_first_search(city_map1, start, goal), None)
+paths1["A*"] = (a_star_search(city_map1, start, goal), None)
 
 
 # Save the paths to a single file
-save_path_to_file(paths, "output_level1.txt")
+save_path_to_file(paths1, "output_level1.txt")
 
-paths["A* with Time Constraint"] = a_star_search_with_time_constraint(city_map2, start, goal, max_time)
-save_path_to_file(paths, "output_level2.txt")
+paths2 = {}
 
-paths["A* with fuel Constraint"] = a_star_search_with_fuel_constraint(city_map=city_map3, start=start3)
+paths2["A* with Time Constraint"] = a_star_search_with_time_constraint(city_map2, start, goal, max_time)
+save_path_to_file(paths2, "output_level2.txt")
+
+paths3 = {}
+paths3["A* with fuel Constraint"] = a_star_search_with_fuel_constraint(city_map=city_map3, start=start3, goal=goal3, full_fuel=fuel)
+save_path_to_file(paths3, "output_level3.txt")
 # Số lượng phần tử phải tương ứng với số lượng S1, S2,... G1, G2,.. được tạo ra trong file input
 def level_4(file_path, n_agents):
     city_map = parse_city_map_lv4(file_path)
