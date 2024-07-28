@@ -18,7 +18,7 @@ def parse_city_map(file_path_level1):
     return city_map, width, height
 
 # Define the map
-file_path = 'input_level1.txt'
+file_path = 'input_level1_1.txt'
 city_map, width, height = parse_city_map(file_path)
 
 # Define specific colors for 'S' and 'G' cells
