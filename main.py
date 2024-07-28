@@ -2,7 +2,6 @@ import heapq
 from collections import deque
 import copy
 
-# Function to parse the city map
 def parse_city_map_lv2(file_path_level2):
     with open(file_path_level2, 'r') as file:
         lines = file.readlines()
@@ -102,7 +101,6 @@ def bfs(city_map, start, goal):
                 
     return None
     
-# DFS implementation
 def dfs(city_map, start, goal):
     rows, cols = len(city_map), len(city_map[0])
     visited = [[False for _ in range(cols)] for _ in range(rows)]
@@ -127,9 +125,8 @@ def dfs(city_map, start, goal):
                 else:
                     print(f"Skipping out-of-bounds cell ({nx}, {ny})")
 
-    return None  # No path found
+    return None  
 
-# UCS implementation
 def ucs(city_map, start, goal):
     rows, cols = len(city_map), len(city_map[0])
     visited = [[False for _ in range(cols)] for _ in range(rows)]
@@ -149,9 +146,8 @@ def ucs(city_map, start, goal):
                 if 0 <= nx < rows and 0 <= ny < cols and city_map[nx][ny] != '-1' and not visited[nx][ny]:
                     heapq.heappush(pq, (cost + 1, (nx, ny), path + [(x, y)]))
                 
-    return None  # No path found
+    return None  
 
-# Greedy Best-First Search implementation
 def heuristic(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
@@ -174,9 +170,8 @@ def greedy_best_first_search(city_map, start, goal):
                 if 0 <= nx < rows and 0 <= ny < cols and city_map[nx][ny] != '-1' and not visited[nx][ny]:
                     heapq.heappush(pq, (heuristic((nx, ny), goal), (nx, ny), path + [(x, y)]))
                 
-    return None  # No path found
+    return None  
 
-# A* Search implementation
 def a_star_search(city_map, start, goal):
     rows, cols = len(city_map), len(city_map[0])
     visited = [[False for _ in range(cols)] for _ in range(rows)]
@@ -198,9 +193,8 @@ def a_star_search(city_map, start, goal):
                     new_f = new_g + heuristic((nx, ny), goal)
                     heapq.heappush(pq, (new_f, new_g, (nx, ny), path + [(x, y)]))
                 
-    return None  # No path found
+    return None 
 
-# A* Search implementation considering toll booths and delivery time
 def a_star_search_with_time_constraint(city_map, start, goal, max_time):
     rows, cols = len(city_map), len(city_map[0])
     visited = [[False for _ in range(cols)] for _ in range(rows)]
@@ -256,8 +250,6 @@ def a_star_search_with_fuel_constraint(city_map, start, goal, full_fuel):
         
     return None, None #No path found or fuel runs out before reaching the goal
             
-
-# Function to save the path to a file
 def save_path_to_file(paths, filename):
     with open(filename, 'w') as file:
         for algorithm, (path, total_time) in paths.items():
@@ -271,7 +263,6 @@ def save_path_to_file(paths, filename):
                 file.write("No path found or path exceeds max time")
             file.write('\n\n')
 
-# Parse the city map
 file_path_level1 = 'input_level1_1.txt'
 file_path_level2 = 'input_level2_1.txt'
 file_path_level3 = 'input_level3.txt'
@@ -284,9 +275,8 @@ city_map = parse_city_map_lv1(file_path_level1)
 city_map, start, max_time, vehicle_name = parse_city_map_lv2(file_path_level2)
 
 # Define the goal position
-goal = (9, 0)  # Adjust according to the specific goal position
+goal = (9, 0)  
 
-# Run each search algorithm and store the results
 paths1 = {}
 paths1["BFS"] = (bfs(city_map1, start, goal), None)
 paths1["DFS"] = (dfs(city_map1, start, goal), None)
@@ -295,7 +285,6 @@ paths1["Greedy Best First Search"] = (greedy_best_first_search(city_map1, start,
 paths1["A*"] = (a_star_search(city_map1, start, goal), None)
 
 
-# Save the paths to a single file
 save_path_to_file(paths1, "output_level1.txt")
 
 paths2 = {}
