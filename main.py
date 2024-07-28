@@ -29,7 +29,7 @@ def parse_city_map_lv3(file_path_level3):
     first_line = lines[0].strip().split()
     
     if len(first_line) < 3:
-        raise ValueError("The first line of the input file must contain the vehicle name, start position, and maximum delivery time.")
+        raise ValueError("The first line of the input file must contain start position, end position and fuel.")
     
     start_position = eval(first_line[0])
     end_position = eval(first_line[1])
@@ -231,8 +231,11 @@ def a_star_search_with_fuel_constraint(city_map, start, goal, full_fuel):
     while pq:
         f, g, (x, y), path, fuel = heapq.heappop(pq)
         
-        if (x, y) == goal and fuel >= 0:
+        if (x, y) == goal:
             return path + [(x, y)], fuel
+        
+        if fuel == 0:
+            continue #fuel has run out
         
         if not visited[x][y]:
             visited[x][y] = True
@@ -243,8 +246,7 @@ def a_star_search_with_fuel_constraint(city_map, start, goal, full_fuel):
                     new_fuel = full_fuel if city_map[nx][ny] == 'F' else fuel - 1
                     new_g = g + 1
                     new_f = new_g + heuristic((nx, ny), goal)
-                    if fuel >= 0:
-                        heapq.heappush(pq, (new_f, new_g, (nx, ny), path + [(x, y)], new_fuel))
+                    heapq.heappush(pq, (new_f, new_g, (nx, ny), path + [(x, y)], new_fuel))
         
         
     return None, None #No path found or fuel runs out before reaching the goal
