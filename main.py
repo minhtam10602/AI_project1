@@ -121,6 +121,8 @@ def dfs(city_map, start, goal):
                 
                 if 0 <= nx < rows and 0 <= ny < cols and city_map[nx][ny] != '-1' and not visited[nx][ny]:
                     stack.append(((nx, ny), path + [(x, y)]))
+                else:
+                    print(f"Skipping cell ({nx}, {ny}) with value {city_map[nx][ny]}")
                 
     return None  # No path found
 
