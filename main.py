@@ -273,7 +273,7 @@ def save_path_to_file(paths, filename):
 
 # Parse the city map
 file_path_level1 = 'input_level1_1.txt'
-file_path_level2 = 'input_level2.txt'
+file_path_level2 = 'input_level2_1.txt'
 file_path_level3 = 'input_level3.txt'
 city_map1 = parse_city_map_lv1(file_path_level1)
 city_map2, start, max_time, vehicle_name = parse_city_map_lv2(file_path_level2)
