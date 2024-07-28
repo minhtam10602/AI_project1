@@ -107,23 +107,26 @@ def dfs(city_map, start, goal):
     rows, cols = len(city_map), len(city_map[0])
     visited = [[False for _ in range(cols)] for _ in range(rows)]
     stack = [(start, [])]
-    
+
     while stack:
         (x, y), path = stack.pop()
-        
+
         if (x, y) == goal:
             return path + [(x, y)]
-        
+
         if not visited[x][y]:
             visited[x][y] = True
             for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
                 nx, ny = x + dx, y + dy
-                
-                if 0 <= nx < rows and 0 <= ny < cols and city_map[nx][ny] != '-1' and not visited[nx][ny]:
-                    stack.append(((nx, ny), path + [(x, y)]))
+
+                if 0 <= nx < rows and 0 <= ny < cols:
+                    if city_map[nx][ny] != '-1' and not visited[nx][ny]:
+                        stack.append(((nx, ny), path + [(x, y)]))
+                    else:
+                        print(f"Skipping cell ({nx}, {ny}) with value {city_map[nx][ny]}")
                 else:
-                    print(f"Skipping cell ({nx}, {ny}) with value {city_map[nx][ny]}")
-                
+                    print(f"Skipping out-of-bounds cell ({nx}, {ny})")
+
     return None  # No path found
 
 # UCS implementation
